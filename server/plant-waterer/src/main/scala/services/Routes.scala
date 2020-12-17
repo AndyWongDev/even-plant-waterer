@@ -11,7 +11,9 @@ class Routes(plantsService: PlantsService, schedulerService: SchedulerService) e
   def routes: Route =
     path("plants") {
       get {
-        complete(plantsService.getPlants())
+        parameter("pinId".?) { pinId =>
+          complete(plantsService.getPlants(pinId.map(_.toInt)))
+        }
       } ~ post {
         entity(as[PlantCreateData]) { plantCreateData =>
           val plant = plantsService.addPlant(plantCreateData)
