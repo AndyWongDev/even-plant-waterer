@@ -1,0 +1,13 @@
+# Default ignored files
+/.idea/workspace.xml
+bin/
+plant-waterer/project/project/project
+plant-waterer/project/project/target/*
+plant-waterer/project/project/target
+plant-waterer/project/target/*
+target
+plant-waterer/.idea
+.bsp
+*.un~
+.idea/*
+.bsp/*
