@@ -42,7 +42,7 @@ def schedules_response(plantId, time: datetime, duration_in_mins: int):
         return requests.get(f"{PLANT_WATERER_ADDRESS}/schedules"
                             f"?plantId={plantId}"
                             f"&start={time.isoformat().format()}"
-                            f"&durationInMins={duration_in_mins}")
+                            f"&durationInMins={duration_in_mins}").json()
 
 
 #  =================
@@ -62,10 +62,10 @@ def server_checking_loop(sc):
     #        plantType: String,
     #        volume: Float,
     #        schedule: String)
-    plants = plants_response().json()
+    plants = plants_response()
 
     for plant in plants:
-        plant_schedules = schedules_response(plant["id"], datetime.now(), 60).json()
+        plant_schedules = schedules_response(plant["id"], datetime.now(), 60)
 
 
 watering_scheduler.enter(60, 1, watering_loop, (watering_scheduler,))
