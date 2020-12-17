@@ -13,12 +13,3 @@ case class PlantCreateData(pinId: Int,
                            plantType: String,
                            volume: Int,
                            schedule: String)
-
-object Plants {
-
-  trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
-    implicit val plantFormat = jsonFormat6(Plant)
-    implicit val plantCreateDataFormat = jsonFormat4(PlantCreateData)
-  }
-
-}

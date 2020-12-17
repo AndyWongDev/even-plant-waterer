@@ -3,7 +3,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import database.PlantsTable
-import services.{PlantsService, Routes}
+import services.{PlantsService, Routes, SchedulerService}
 
 import scala.concurrent.ExecutionContext
 
@@ -15,7 +15,8 @@ object Main extends App {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   val plantsTable = new PlantsTable()
   val plantsService = new PlantsService(plantsTable)
-  def route = new Routes(plantsService).routes
+  val schedulerService = new SchedulerService()
+  def route = new Routes(plantsService, schedulerService).routes
 
   Http().bindAndHandle(route, host, port)
 }
