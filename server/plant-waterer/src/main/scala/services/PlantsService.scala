@@ -56,11 +56,10 @@ class PlantsService(table: PlantsTable) {
     }
   }
 
-  def getPlants(pinId: Option[Int] = None, includeDeleted: Boolean = false): Seq[Plant] = {
-    if (includeDeleted) {
-      table.plants
-    } else {
-      table.plants.filter(!_.deleted)
+  def getPlants(pinId: Option[Int] = None): Seq[Plant] = {
+    pinId match {
+      case Some(id) => table.plants.filter(plant => plant.pinId == id && !plant.deleted)
+      case None     => table.plants.filter(!_.deleted)
     }
   }
 }
