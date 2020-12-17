@@ -18,17 +18,19 @@ class Routes(plantsService: PlantsService, schedulerService: SchedulerService)
           val plant = plantsService.addPlant(plantCreateData)
           complete(plant)
         }
+      } ~ delete {
+        parameter("pinId".as[Int]) { (id) =>
+          plantsService.delete(id)
+          complete(s"plant at pinId: $id deleted")
+        }
       }
     } ~ path("schedules") {
       get {
-        parameters("pinId", "startTime", "duration") {
+        parameters("pinId".as[Int], "startTime", "duration".as[Int]) {
           (pinId, startTime, duration) =>
             complete(
-              schedulerService.getSchedule(
-                pinId.toInt,
-                Instant.parse(startTime),
-                duration.toInt
-              )
+              schedulerService
+                .getSchedule(pinId, Instant.parse(startTime), duration)
             )
         }
       }

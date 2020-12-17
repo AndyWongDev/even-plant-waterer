@@ -15,8 +15,11 @@ object Main extends App {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   val plantsTable = new PlantsTable()
   val plantsService = new PlantsService(plantsTable)
-  val schedulerService = new SchedulerService()
+  val schedulerService = new SchedulerService(plantsService)
   def route = new Routes(plantsService, schedulerService).routes
 
   Http().bindAndHandle(route, host, port)
+
 }
+
+
