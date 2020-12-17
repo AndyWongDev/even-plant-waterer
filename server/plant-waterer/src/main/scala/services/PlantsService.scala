@@ -7,42 +7,61 @@ import scala.util.Random
 class PlantsService(table: PlantsTable) {
 
   def addPlant(createData: PlantCreateData): Plant = {
-    val plant = Plant(
-      id = Random.nextInt(),
-      pinId = createData.pinId,
-      plantType = createData.plantType,
-      volume = createData.volume,
-      schedule = createData.schedule,
-      deleted = None
-    )
-    println("creating new plant")
-    table.plants = plant :: table.plants
-    plant
+    table.plants.find(_.pinId == createData.pinId) match {
+      case Some(_) =>
+        delete(pinId = createData.pinId)
+        val plant = Plant(
+          id = Random.nextInt(),
+          pinId = createData.pinId,
+          plantType = createData.plantType,
+          volume = createData.volume,
+          schedule = createData.schedule
+        )
+        println("creating new plant")
+        table.plants = plant :: table.plants
+        plant
+      case None =>
+        val plant = Plant(
+          id = Random.nextInt(),
+          pinId = createData.pinId,
+          plantType = createData.plantType,
+          volume = createData.volume,
+          schedule = createData.schedule
+        )
+        println("creating new plant")
+        table.plants = plant :: table.plants
+        plant
+    }
   }
 
-  def delete(pinId: Int) = {
-    println(s"deleting plant at pin: $pinId")
+  def delete(pinId: Int): Unit = {
+    val plantToBeDeleted =
+      table.plants.find(plant => plant.pinId == pinId && !plant.deleted)
+    val remainingPlants =
+      table.plants.filterNot(plant => plant.pinId == pinId && !plant.deleted)
+    plantToBeDeleted match {
+      case Some(value) =>
+        println(s"deleting plant at pinId: $pinId")
+        table.plants = Plant(
+          id = value.id,
+          pinId = value.pinId,
+          plantType = value.plantType,
+          volume = value.volume,
+          schedule = value.schedule,
+          deleted = true
+        ) :: remainingPlants
+      case None =>
+        println(s"could not find plant with pinId $pinId")
+        table.plants = remainingPlants
+    }
   }
 
-  def getPlants(pinId: Option[Int] = None): Seq[Plant] = {
-    Seq(
-      Plant(
-        id = Random.nextInt(),
-        pinId = Random.nextInt(),
-        plantType = "Cactus",
-        volume = 4,
-        schedule = "every week",
-        None
-      ),
-      Plant(
-        id = Random.nextInt(),
-        pinId = Random.nextInt(),
-        plantType = "Maple",
-        volume = 1,
-        schedule = "every day",
-        None
-      )
-    )
+  def getPlants(pinId: Option[Int] = None,
+                includeDeleted: Boolean = false): Seq[Plant] = {
+    if (includeDeleted) {
+      table.plants
+    } else {
+      table.plants.filter(!_.deleted)
+    }
   }
-
 }
