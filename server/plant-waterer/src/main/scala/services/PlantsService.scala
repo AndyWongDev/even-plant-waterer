@@ -56,8 +56,7 @@ class PlantsService(table: PlantsTable) {
     }
   }
 
-  def getPlants(pinId: Option[Int] = None,
-                includeDeleted: Boolean = false): Seq[Plant] = {
+  def getPlants(pinId: Option[Int] = None, includeDeleted: Boolean = false): Seq[Plant] = {
     if (includeDeleted) {
       table.plants
     } else {

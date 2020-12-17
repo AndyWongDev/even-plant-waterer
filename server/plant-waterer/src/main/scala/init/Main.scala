@@ -21,5 +21,3 @@ object Main extends App {
   Http().bindAndHandle(route, host, port)
 
 }
-
-

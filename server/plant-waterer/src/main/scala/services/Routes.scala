@@ -6,8 +6,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import models.PlantCreateData
 
-class Routes(plantsService: PlantsService, schedulerService: SchedulerService)
-    extends JsonSupport {
+class Routes(plantsService: PlantsService, schedulerService: SchedulerService) extends JsonSupport {
 
   def routes: Route =
     path("plants") {
@@ -26,12 +25,11 @@ class Routes(plantsService: PlantsService, schedulerService: SchedulerService)
       }
     } ~ path("schedules") {
       get {
-        parameters("pinId".as[Int], "startTime", "duration".as[Int]) {
-          (pinId, startTime, duration) =>
-            complete(
-              schedulerService
-                .getSchedule(pinId, Instant.parse(startTime), duration)
-            )
+        parameters("pinId".as[Int], "startTime", "duration".as[Int]) { (pinId, startTime, duration) =>
+          complete(
+            schedulerService
+              .getSchedule(pinId, Instant.parse(startTime), duration)
+          )
         }
       }
     }
