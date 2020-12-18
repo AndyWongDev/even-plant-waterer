@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
 //  "com.github.philcali" %% "cronish" % "0.1.5",
   "com.typesafe.play" %% "play-json" % "2.8.1",
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.3",
-  "ch.megard" %% "akka-http-cors" % "1.1.1"
+  "ch.megard" %% "akka-http-cors" % "0.3.1"
 
 )
 // Here, `libraryDependencies` is a set of dependencies, and by using `+=`,
