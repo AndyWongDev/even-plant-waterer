@@ -12,7 +12,10 @@ import requests
 #  STATIC variables
 #  =================
 PLANT_WATERER_ADDRESS = "http://localhost:9000"
-MOCKING = True
+MOCKING = False
+INTERVAL_WATERING = 5
+INTERVAL_SERVER = 10
+INTERVAL_GLOBAL = 1
 
 #  =================
 #  Set up schedulers
@@ -95,7 +98,7 @@ def watering_loop(sc):
         schedule = plant_schedules[plant['id']]
         volume =  watering_vol_for_time(schedule)
         print(f"[{datetime.utcnow().strftime('%Y-%m-%dT%H:%M:00.000Z')}] Watering : {plant['plantType']} on pin {plant['pinId']} with volume: {volume}")
-    watering_scheduler.enter(5, 1, watering_loop, (sc,))
+    watering_scheduler.enter(INTERVAL_WATERING, 1, watering_loop, (sc,))
 
 
 def server_checking_loop(sc):
@@ -107,14 +110,14 @@ def server_checking_loop(sc):
     five_mins_ago = datetime.now() - timedelta(minutes=5)
     for plant in plants:
         plant_schedules[plant['id']] = schedules_response(plant["pinId"], five_mins_ago, 60)
-    server_scheduler.enter(10, 1, server_checking_loop, (sc,))
+    server_scheduler.enter(INTERVAL_SERVER, 1, server_checking_loop, (sc,))
 
 
 def global_scheduling_loop(sc):
     server_scheduler.run(False)
     watering_scheduler.run(False)
-    time.sleep(1)
-    global_scheduler.enter(0, 1, global_scheduling_loop, (sc,))
+    time.sleep(INTERVAL_GLOBAL)
+    global_scheduler.enter(INTERVAL_GLOBAL, 1, global_scheduling_loop, (sc,))
 
 
 #  =================
