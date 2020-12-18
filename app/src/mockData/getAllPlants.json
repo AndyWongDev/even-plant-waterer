@@ -1,0 +1,16 @@
+[
+  {
+    "id": -1881272990,
+    "pinId": -503527862,
+    "plantType": "Cactus",
+    "volume": 4,
+    "schedule": "every week"
+  },
+  {
+    "id": 362109069,
+    "pinId": 504790677,
+    "plantType": "Maple",
+    "volume": 1,
+    "schedule": "every day"
+  }
+]
