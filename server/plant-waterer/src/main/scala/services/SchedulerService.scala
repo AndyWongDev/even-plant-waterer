@@ -19,7 +19,7 @@ class SchedulerService(plantsService: PlantsService) {
           val formattedLocalDateTime = reformatLocalDateTime(nextTime)
           State(
             time = printerFormatter.format(formattedLocalDateTime),
-            volume = if (croneSchedule.allOf(formattedLocalDateTime)) value.volume else 0
+            volume = if (cronSchedule.allOf(formattedLocalDateTime)) value.volume else 0
           )
         }
       case None => Seq.empty[State]
