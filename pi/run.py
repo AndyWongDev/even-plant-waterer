@@ -1,7 +1,7 @@
 # import RPi.GPIO as GPIO
 import sched
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 
 import requests
@@ -58,34 +58,33 @@ def schedules_response(plant_id, start_time: datetime, duration_in_mins: int):
     if MOCKING:
         return [
             {
-                "time": "2020-12-18T17:36",
-                "state": True
+                "time": "2020-12-18T19:32:00.000Z",
+                "volume": 1
             },
             {
-                "time": "2020-12-18T17:37",
-                "state": True
+                "time": "2020-12-18T19:33:00.000Z",
+                "volume": 2
             },
             {
-                "time": "2020-12-18T17:38",
-                "state": False
+                "time": "2020-12-18T19:34:00.000Z",
+                "volume": 0
             }
         ]
     else:
         url = (f"{PLANT_WATERER_ADDRESS}/schedules"
                f"?pinId={plant_id}"
-               f"&startTime={start_time.isoformat().format()}Z"
+               f"&startTime={start_time.strftime('%Y-%m-%dT%H:%M:00.000Z')}"
                f"&duration={duration_in_mins}")
         print(url)
         return requests.get(url).json()
 
 
-def should_water_now(scheduled: List[dict]) -> bool:
-    ts = datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
-    print(ts)
+def watering_vol_for_time(scheduled: List[dict]) -> bool:
+    ts = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:00.000Z")
     for s in scheduled:
         if s['time'] == ts:
-            return s['state']
-    return False
+            return s['volume']
+    return 0
 
 
 #  =================
@@ -94,8 +93,8 @@ def should_water_now(scheduled: List[dict]) -> bool:
 def watering_loop(sc):
     for plant in plants:
         schedule = plant_schedules[plant['id']]
-        if should_water_now(schedule):
-            print(f"Watering : {plant['plantType']} on pin {plant['pinId']}")
+        volume =  watering_vol_for_time(schedule)
+        print(f"[{datetime.utcnow().strftime('%Y-%m-%dT%H:%M:00.000Z')}] Watering : {plant['plantType']} on pin {plant['pinId']} with volume: {volume}")
     watering_scheduler.enter(5, 1, watering_loop, (sc,))
 
 
@@ -103,10 +102,11 @@ def server_checking_loop(sc):
     global plants
     global plant_schedules
     plants = plants_response()
-    print(f"Checking : received {len(plants)} plants")
+    print(f"[{datetime.utcnow().strftime('%Y-%m-%dT%H:%M:00.000Z')}] Checking : received {len(plants)} plants")
 
+    five_mins_ago = datetime.now() - timedelta(minutes=5)
     for plant in plants:
-        plant_schedules[plant['id']] = schedules_response(plant["pinId"], datetime.now(), 60)
+        plant_schedules[plant['id']] = schedules_response(plant["pinId"], five_mins_ago, 60)
     server_scheduler.enter(10, 1, server_checking_loop, (sc,))
 
 
