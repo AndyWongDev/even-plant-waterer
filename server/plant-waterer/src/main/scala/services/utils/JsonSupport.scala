@@ -1,6 +1,8 @@
-package services
+package services.utils
+
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import models.{Plant, PlantCreateData}
+import services.State
 import spray.json.DefaultJsonProtocol
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
