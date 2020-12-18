@@ -28,6 +28,8 @@ class Routes(plantsService: PlantsService, schedulerService: SchedulerService) e
     } ~ path("schedules") {
       get {
         parameters("pinId".as[Int], "startTime", "duration".as[Int]) { (pinId, startTime, duration) =>
+          val response = schedulerService.getSchedule(pinId, Instant.parse(startTime), duration)
+          println(response)
           complete(
             schedulerService
               .getSchedule(pinId, Instant.parse(startTime), duration)

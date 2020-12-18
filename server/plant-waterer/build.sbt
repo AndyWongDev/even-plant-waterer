@@ -1,6 +1,6 @@
 // The simplest possible sbt build file is just one line:
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.1"
 // That is, to create a valid sbt build, all you've got to do is define the
 // version of Scala you'd like your project to use.
 
@@ -28,7 +28,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream" % "2.5.13",
   "com.typesafe.akka" %% "akka-http" % "10.1.3",
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
-//  "com.github.philcali" %% "cronish" % "0.1.5",
+  "com.github.alonsodomin.cron4s" %% "cron4s-core" % "0.6.1",
   "com.typesafe.play" %% "play-json" % "2.8.1",
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.3"
 )
