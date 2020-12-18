@@ -2,6 +2,7 @@
 import sched
 import time
 from datetime import datetime
+from typing import List
 
 import requests
 
@@ -18,9 +19,10 @@ MOCKING = True
 #  =================
 watering_scheduler = sched.scheduler(time.time, time.sleep)
 server_scheduler = sched.scheduler(time.time, time.sleep)
+global_scheduler = sched.scheduler(time.time, time.sleep)
 
 #  =================
-#  MVars for holding state
+#  global MVars for holding state
 #  =================
 plants = []
 plant_schedules = {}
@@ -56,15 +58,15 @@ def schedules_response(plant_id, start_time: datetime, duration_in_mins: int):
     if MOCKING:
         return [
             {
-                "time": "2020-12-17T21:21:23.109Z",
+                "time": "2020-12-18T17:36",
                 "state": True
             },
             {
-                "time": "2020-12-17T21:21:23.109Z",
+                "time": "2020-12-18T17:37",
                 "state": True
             },
             {
-                "time": "2020-12-17T21:21:23.109Z",
+                "time": "2020-12-18T17:38",
                 "state": False
             }
         ]
@@ -77,33 +79,54 @@ def schedules_response(plant_id, start_time: datetime, duration_in_mins: int):
         return requests.get(url).json()
 
 
+def should_water_now(scheduled: List[dict]) -> bool:
+    ts = datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
+    print(ts)
+    for s in scheduled:
+        if s['time'] == ts:
+            return s['state']
+    return False
+
+
 #  =================
 #  Event loops
 #  =================
 def watering_loop(sc):
-    print("Watering...")
     # do your stuff
+    for plant in plants:
+        sched = plant_schedules[plant['id']]
+        if should_water_now(sched):
+            print(f"Watering : {plant['plantType']} on pin {plant['pinId']}")
     watering_scheduler.enter(5, 1, watering_loop, (sc,))
 
 
 def server_checking_loop(sc):
-    print("Checking Server...")
     # do your stuff
     # Plants(pinId: Int,
     #        plantType: String,
     #        volume: Float,
     #        schedule: String)
+    global plants
+    global plant_schedules
     plants = plants_response()
+    print(f"Checking : received {len(plants)} plants")
 
     for plant in plants:
-        print(plant)
-        plant_schedules = schedules_response(plant["pinId"], datetime.now(), 60)
+        plant_schedules[plant['id']] = schedules_response(plant["pinId"], datetime.now(), 60)
     server_scheduler.enter(10, 1, server_checking_loop, (sc,))
 
 
-server_scheduler.enter(0, 1, server_checking_loop, (server_scheduler,))
-watering_scheduler.enter(0, 1, watering_loop, (watering_scheduler,))
-
-while True:
+def global_scheduling_loop(sc):
     server_scheduler.run(False)
     watering_scheduler.run(False)
+    time.sleep(1)
+    global_scheduler.enter(0, 1, global_scheduling_loop, (global_scheduler,))
+
+
+def unsafe_run_sync():
+    server_scheduler.enter(0, 1, server_checking_loop, (server_scheduler,))
+    watering_scheduler.enter(0, 1, watering_loop, (watering_scheduler,))
+    global_scheduler.enter(0, 1, global_scheduling_loop, (global_scheduler,))
+    global_scheduler.run(False)
+
+unsafe_run_sync()
