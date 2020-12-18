@@ -6,10 +6,13 @@ import parser from 'cron-parser';
 import cronTime from "cron-time-generator";
 
 ReactDOM.render(<App />, document.getElementById('root'));
-// const query = 'http://localhost:9000/schedules?pinId=123&startTime=2020-01-01T00:00:00Z&duration=10';
-// const x = fetch(query, { mode: 'no-cors' }).then(res => res.json())
-// console.log(x)
- 
+const query = 'http://localhost:9000/schedules?pinId=123&startTime=2020-01-01T00:00:00Z&duration=10';
+const x = fetch(query).then(res => {
+    console.log(res.json())
+    return JSON.stringify(res)
+})
+console.log(x)
+
 // console.log(cronTime.everyMinute());
 
 // try {
