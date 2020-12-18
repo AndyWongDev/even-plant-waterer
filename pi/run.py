@@ -92,20 +92,14 @@ def should_water_now(scheduled: List[dict]) -> bool:
 #  Event loops
 #  =================
 def watering_loop(sc):
-    # do your stuff
     for plant in plants:
-        sched = plant_schedules[plant['id']]
-        if should_water_now(sched):
+        schedule = plant_schedules[plant['id']]
+        if should_water_now(schedule):
             print(f"Watering : {plant['plantType']} on pin {plant['pinId']}")
     watering_scheduler.enter(5, 1, watering_loop, (sc,))
 
 
 def server_checking_loop(sc):
-    # do your stuff
-    # Plants(pinId: Int,
-    #        plantType: String,
-    #        volume: Float,
-    #        schedule: String)
     global plants
     global plant_schedules
     plants = plants_response()
