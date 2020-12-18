@@ -114,13 +114,18 @@ def global_scheduling_loop(sc):
     server_scheduler.run(False)
     watering_scheduler.run(False)
     time.sleep(1)
-    global_scheduler.enter(0, 1, global_scheduling_loop, (global_scheduler,))
+    global_scheduler.enter(0, 1, global_scheduling_loop, (sc,))
 
 
+#  =================
+#  Driver function
+#  =================
 def unsafe_run_sync():
     server_scheduler.enter(0, 1, server_checking_loop, (server_scheduler,))
     watering_scheduler.enter(0, 1, watering_loop, (watering_scheduler,))
     global_scheduler.enter(0, 1, global_scheduling_loop, (global_scheduler,))
     global_scheduler.run(False)
 
-unsafe_run_sync()
+
+if __name__ == "__main__":
+    unsafe_run_sync()
