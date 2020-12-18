@@ -1,15 +1,12 @@
 import { Card, Avatar } from 'antd';
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { BgColorsOutlined, EditOutlined } from '@ant-design/icons';
+import ScheduleButton from './ScheduleButton';
 
 const { Meta } = Card;
 
 const PlantCard = (props) => (
   <Card
-    style={{ width: 300, margin: 16 }}
+    style={{ width: 300, margin: 16, display: 'inline-block' }}
     cover={
       <img
         alt="cactus"
@@ -17,21 +14,25 @@ const PlantCard = (props) => (
       />
     }
     actions={[
-      <SettingOutlined key="setting" />,
+      <ScheduleButton />,
       <EditOutlined key="edit" />,
-      <EllipsisOutlined key="ellipsis" />,
+      <BgColorsOutlined key="water" disabled={true} />,
     ]}
   >
     <Meta
       avatar={
         <Avatar src="https://avatars0.githubusercontent.com/u/4334491?s=460&v=4" />
       }
-      title="One Happy Plant"
-      description={<><p>Plant ID: {props.id}</p>
-      <p>Pin ID: {props.pinId}</p>
-      <p>Plant Type: {props.plantType}</p>
-      <p>Volume: {props.volume}</p>
-      <p>Schedule: {props.schedule}</p></>}
+      title="One Very Happy Plant"
+      description={
+        <>
+          <p>Plant ID: {props.id}</p>
+          <p>Pin ID: {props.pinId}</p>
+          <p>Plant Type: {props.plantType}</p>
+          <p>Volume: {props.volume}</p>
+          <p>Schedule: {props.schedule}</p>
+        </>
+      }
     />
   </Card>
 );
