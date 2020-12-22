@@ -56,6 +56,18 @@ class PlantsService(table: PlantsTable) {
     }
   }
 
+  def updatePlant(pinId: Int, schedule: String, volume: Int): Option[Plant] = {
+    getPlants(pinId = Some(pinId)).headOption match {
+      case Some(value) =>
+        val otherPlants = table.plants.filter(_.pinId == pinId)
+        val updatedPlant =
+          Plant(id = value.id, pinId = value.pinId, plantType = value.plantType, volume = volume, schedule = schedule)
+        table.plants = updatedPlant :: otherPlants
+        Some(updatedPlant)
+      case None => None
+    }
+  }
+
   def getPlants(pinId: Option[Int] = None): Seq[Plant] = {
     pinId match {
       case Some(id) => table.plants.filter(plant => plant.pinId == id && !plant.deleted)
