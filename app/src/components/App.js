@@ -16,7 +16,7 @@ const App = () => {
     fetch(`/plants`)
       .then((res) => res.json())
       .then((res) => setPlants(res));
-  });
+  }, []);
 
   return (
     <Layout>

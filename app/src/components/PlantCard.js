@@ -2,119 +2,35 @@ import { Card, Avatar } from 'antd';
 import { BgColorsOutlined, EditOutlined } from '@ant-design/icons';
 import ScheduleButton from './ScheduleButton';
 import MyResponsiveLine from './Chart';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const { Meta } = Card;
 
 const PlantCard = (props) => {
+  const dataPoints = [];
 
-  const [schedule, setSchedule] = React.useState([])
-  //TODO Figure out how to properly set the state in reaction to new server events via a react hook 
-  let fetchSchedules = (pinId) => {
-    let d = new Date().toISOString()
-    const query = `/schedules?pinId=${pinId}&startTime=${d}&duration=10`;
-    return fetch(query).then(res => res.json()).then(res => {
-      console.log(res)
-      let xyRes =  res.map((timeAndVolume) => ({ x: timeAndVolume.time, y: timeAndVolume.volume }))
-      setSchedule(xyRes)
-      console.log(xyRes)
-      return xyRes
-    })
-  }
+  useEffect(() => {
+    const date = new Date().toISOString();
+    const query = `/schedules?pinId=${props.pinId}&startTime=${date}&duration=10`;
+    fetch(query)
+      .then((res) => res.json())
+      .then((res) =>
+        res.map((timeAndVolume) => ({
+          x: timeAndVolume.time,
+          y: timeAndVolume.volume || 1,
+        })),
+      )
+      .then((res) => dataPoints.push(...res));
+  }, []);
 
-  let serverResMapping = {
-    "🌵": [
-      {
-        "x": "2019-12-22T14:43:00.000",
-        "y": 0
-      },
-      {
-        "x": "2019-12-22T14:44:00.000",
-        "y": 0
-      },
-      {
-        "x": "2019-12-22T14:45:00.000",
-        "y": 1
-      },
-      {
-        "x": "2019-12-22T14:46:00.000",
-        "y": 0
-      },
-      {
-        "x": "2019-12-22T14:47:00.000",
-        "y": 0
-      },
-      {
-        "x": "2019-12-22T14:48:00.000",
-        "y": 0
-      },
-      {
-        "x": "2019-12-22T14:49:00.000",
-        "y": 0
-      },
-      {
-        "x": "2019-12-22T14:50:00.000",
-        "y": 1
-      },
-      {
-        "x": "2019-12-22T14:51:00.000",
-        "y": 0
-      },
-      {
-        "x": "2019-12-22T14:52:00.000",
-        "y": 0
-      }
-    ], 
-    "🌱": [
-      
-        {
-            "x": "2019-12-22T14:43:00.000",
-            "y": 0
-        },
-        {
-            "x": "2019-12-22T14:44:00.000",
-            "y": 1
-        },
-        {
-            "x": "2019-12-22T14:45:00.000",
-            "y": 0
-        },
-        {
-            "x": "2019-12-22T14:46:00.000",
-            "y": 1
-        },
-        {
-            "x": "2019-12-22T14:47:00.000",
-            "y": 0
-        },
-        {
-            "x": "2019-12-22T14:48:00.000",
-            "y": 1
-        },
-        {
-            "x": "2019-12-22T14:49:00.000",
-            "y": 0
-        },
-        {
-            "x": "2019-12-22T14:50:00.000",
-            "y": 1
-        },
-        {
-            "x": "2019-12-22T14:51:00.000",
-            "y": 0
-        },
-        {
-            "x": "2019-12-22T14:52:00.000",
-            "y": 1
-        }
-    ]
+  const data = [
+    {
+      id: 'WateringTimes',
+      color: 'hsl(98, 70%, 50%)',
+      data: dataPoints,
+    },
+  ];
 
-  }
-  let data = [{
-    "id": "WateringTimes",
-    "color": "hsl(98, 70%, 50%)",
-    "data": schedule
-  }]
   return (
     <Card
       style={{ width: 500, margin: 16, display: 'inline-block' }}
@@ -141,14 +57,15 @@ const PlantCard = (props) => {
             <p>Pin ID: {props.pinId}</p>
             <p>Plant Type: {props.plantType}</p>
             <p>Volume: {props.volume}</p>
-            <p>Schedule: {schedule}</p>
+            <p>Schedule: {props.schedule}</p>
           </>
         }
       />
       <div className="LineGraph" style={{ height: 200 }}>
-        {MyResponsiveLine({ data })}</div>
+        {MyResponsiveLine({ data })}
+      </div>
     </Card>
-  )
+  );
 };
 
 export default PlantCard;
