@@ -1,16 +1,18 @@
 [
   {
-    "id": -1881272990,
-    "pinId": -503527862,
-    "plantType": "Cactus",
-    "volume": 4,
-    "schedule": "every week"
+    "plantType": "🌵",
+    "id": 1366179747,
+    "schedule": "0 */5 * ? * *",
+    "pinId": 3,
+    "volume": 1,
+    "deleted": false
   },
   {
-    "id": 362109069,
-    "pinId": 504790677,
-    "plantType": "Maple",
+    "plantType": "🌱",
+    "id": -184310866,
+    "schedule": "0 */1 * ? * *",
+    "pinId": 2,
     "volume": 1,
-    "schedule": "every day"
+    "deleted": false
   }
 ]

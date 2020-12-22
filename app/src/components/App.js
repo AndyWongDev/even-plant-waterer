@@ -1,27 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import PlantCard from './PlantCard';
 import 'antd/dist/antd.css';
 
 const { Header, Content, Footer } = Layout;
 
-const plantJson = require('../mockData/getAllPlants.json');
-
-const plantList = plantJson.map((plant) => (
-  <PlantCard key={plant.id} {...plant} />
-));
+const getPlantList = (plantJson) =>
+  plantJson.map((plant) => <PlantCard key={plant.id} {...plant} />);
 
 const App = () => {
   const [menuItem, setMenuItem] = useState('Plants');
+  const [plants, setPlants] = useState([]);
+
+  useEffect(() => {
+    fetch(`/plants`)
+      .then((res) => res.json())
+      .then((res) => setPlants(res));
+  }, []);
+
   return (
     <Layout>
       <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
         <div className="logo" />
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[menuItem]}>
-          <Menu.Item key='Plants' onClick={() => setMenuItem('Plants')}>
+          <Menu.Item key="Plants" onClick={() => setMenuItem('Plants')}>
             Plants
           </Menu.Item>
-          <Menu.Item key='Schedule' onClick={() => setMenuItem('Schedule')}>
+          <Menu.Item key="Schedule" onClick={() => setMenuItem('Schedule')}>
             Schedule
           </Menu.Item>
         </Menu>
@@ -38,7 +43,7 @@ const App = () => {
           className="site-layout-background"
           style={{ padding: 24, minHeight: 380 }}
         >
-          {menuItem === 'Plants' ? plantList : null}
+          {menuItem === 'Plants' ? getPlantList(plants) : null}
         </div>
       </Content>
       <Footer style={{ textAlign: 'center' }}>©2020</Footer>
