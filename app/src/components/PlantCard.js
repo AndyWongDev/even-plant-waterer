@@ -12,7 +12,7 @@ const PlantCard = (props) => {
   //TODO Figure out how to properly set the state in reaction to new server events via a react hook 
   let fetchSchedules = (pinId) => {
     let d = new Date().toISOString()
-    const query = `http://localhost:9000/schedules?pinId=${pinId}&startTime=${d}&duration=10`;
+    const query = `/schedules?pinId=${pinId}&startTime=${d}&duration=10`;
     return fetch(query).then(res => res.json()).then(res => {
       console.log(res)
       let xyRes =  res.map((timeAndVolume) => ({ x: timeAndVolume.time, y: timeAndVolume.volume }))
@@ -21,8 +21,7 @@ const PlantCard = (props) => {
       return xyRes
     })
   }
-  // fetchSchedules(props.pinId)
-  // console.log(schedule)
+
   let serverResMapping = {
     "🌵": [
       {

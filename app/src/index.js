@@ -7,11 +7,6 @@ import cronTime from 'cron-time-generator';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
-const query = '/schedules?pinId=123&startTime=2020-01-01T00:00:00Z&duration=10';
-const x = fetch(query)
-  .then((res) => res.json())
-  .then((res) => console.log(res));
-
 // console.log(cronTime.everyMinute());
 
 // try {
