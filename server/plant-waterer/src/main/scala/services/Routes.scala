@@ -1,12 +1,11 @@
 package services
 
+import java.time.Instant
+
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 import models.PlantCreateData
 import services.utils.JsonSupport
-
-import java.time.Instant
 
 class Routes(plantsService: PlantsService, schedulerService: SchedulerService) extends JsonSupport {
 
@@ -26,6 +25,10 @@ class Routes(plantsService: PlantsService, schedulerService: SchedulerService) e
           parameter("pinId".as[Int]) { (id) =>
             plantsService.delete(id)
             complete(s"plant at pinId: $id deleted")
+          }
+        } ~ put {
+          parameter("pinId".as[Int], "schedule", "volumn".as[Int]) { (pinId, schedule, volume) =>
+            complete(plantsService.updatePlant(pinId, schedule, volume))
           }
         }
       } ~ path("schedules") {
