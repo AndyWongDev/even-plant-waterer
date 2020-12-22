@@ -17,7 +17,7 @@ const PlantCard = (props) => {
       .then((res) =>
         res.map((timeAndVolume) => ({
           x: timeAndVolume.time,
-          y: timeAndVolume.volume || 1,
+          y: timeAndVolume.volume,
         })),
       )
       .then((res) => dataPoints.push(...res));
@@ -31,13 +31,18 @@ const PlantCard = (props) => {
     },
   ];
 
+  const imagesMap = {
+    "🌱": "https://live.staticflickr.com/3679/19668433105_d294d47830_3k.jpg",
+    "🌵" : "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cactus-plant-pot-stand-1599155636.jpg",
+    "🌲" : "https://live.staticflickr.com/605/23605023260_2cfded8baa_4k.jpg"
+  }
   return (
     <Card
       style={{ width: 500, margin: 16, display: 'inline-block' }}
       cover={
         <img
-          alt="cactus"
-          src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cactus-plant-pot-stand-1599155636.jpg"
+          alt={props.plantType}
+          src={imagesMap[props.plantType]}
         />
       }
       actions={[
@@ -50,7 +55,7 @@ const PlantCard = (props) => {
         avatar={
           <Avatar src="https://avatars0.githubusercontent.com/u/4334491?s=460&v=4" />
         }
-        title="One Very Happy Plant"
+        title={props.plantType.repeat(5)}
         description={
           <>
             <p>Plant ID: {props.id}</p>
