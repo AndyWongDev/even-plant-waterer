@@ -82,7 +82,7 @@ def schedules_response(plant_id, start_time: datetime, duration_in_mins: int):
 
 
 def watering_vol_for_time(scheduled: List[dict]) -> bool:
-    ts = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:00.000Z")
+    ts = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:00.000")
     for s in scheduled:
         if s['time'] == ts:
             return s['volume']
@@ -97,7 +97,7 @@ def watering_loop(sc):
         schedule = plant_schedules[plant['id']]
         volume = watering_vol_for_time(schedule)
         print(
-            f"[{datetime.utcnow().strftime('%Y-%m-%dT%H:%M:00.000Z')}] Watering : {plant['plantType']} on pin {plant['pinId']} with volume: {volume}")
+            f"[{datetime.utcnow().strftime('%Y-%m-%dT%H:%M:00.000Z')}] Watering : {plant['plantType']} on pin {plant['pinId']} with volume: {'💧'* volume}" )
     watering_scheduler.enter(INTERVAL_WATERING, 1, watering_loop, (sc,))
 
 
@@ -110,10 +110,10 @@ def server_checking_loop(sc):
         pass
     print(f"[{datetime.utcnow().strftime('%Y-%m-%dT%H:%M:00.000Z')}] Checking : received {len(plants)} plants")
 
-    five_mins_ago = datetime.now() - timedelta(minutes=5)
+    five_mins_ago = datetime.utcnow() - timedelta(minutes=5)
     for plant in plants:
         try:
-            plant_schedules[plant['id']] = schedules_response(plant["pinId"], five_mins_ago, 60)
+            plant_schedules[plant['id']] = schedules_response(plant["pinId"], five_mins_ago, 6)
         except:
             continue
     server_scheduler.enter(INTERVAL_SERVER, 1, server_checking_loop, (sc,))
